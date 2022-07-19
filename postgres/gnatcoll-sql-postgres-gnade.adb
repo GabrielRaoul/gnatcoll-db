@@ -314,8 +314,16 @@ package body GNATCOLL.SQL.Postgres.Gnade is
             Vals : aliased CS.chars_ptr_array (0 .. Params'Length - 1);
          begin
             for P in Vals'Range loop
-               Vals (P) := CS.New_String
-                 (Params (Integer (P) + Params'First).Image (Format));
+               -- Added for testing
+               if Params (Integer (P) + Params'First) = Null_Parameter then
+                  Vals (P) := Interfaces.C.Strings.Null_Ptr;
+               else
+                  Vals (P) := CS.New_String
+                    (Params (Integer (P) + Params'First).Image (Format));
+               end if;
+               -- Added for testing
+               --  Vals (P) := CS.New_String
+               --    (Params (Integer (P) + Params'First).Image (Format));
             end loop;
 
             R := PQexecPrepared
